@@ -1,0 +1,23 @@
+Tolong perbaiki dan optimalkan web portfolio saya dengan fokus pada 2 hal berikut:
+
+1. Loading screen web porto
+- Gunakan loading screen yang sudah ada di folder `loading-screen`.
+- Integrasikan loading screen itu ke alur web portfolio dengan rapi.
+- Pastikan loading screen tampil saat halaman belum siap, lalu hilang setelah konten utama selesai dimuat.
+- Kalau perlu, sesuaikan transisi agar terasa halus dan modern.
+
+2. Sertifikat yang bikin lag
+- Update section sertifikat agar tidak lag saat discroll.
+- Wajib gunakan lazy loading untuk gambar sertifikat.
+- Jangan kompres gambar sertifikat.
+- Kalau menurutmu lebih efektif, gunakan pendekatan optimasi lain selain kompresi, misalnya:
+  - render gambar hanya saat masuk viewport,
+  - gunakan Intersection Observer,
+  - pakai skeleton placeholder,
+  - batasi render awal hanya untuk item yang terlihat,
+  - atau teknik optimasi performa lain yang cocok.
+- Tujuannya adalah mengurangi beban render saat banyak gambar sertifikat muncul bersamaan.
+- Jaga tampilan tetap bagus, modern, dan sesuai desain portfolio yang sudah ada.
+
+Tolong implementasikan perubahan ini dengan kode yang clean, rapi, dan tetap mudah dipahami.
+Kalau ada file komponen yang perlu diubah, update bagian yang relevan saja tanpa merusak struktur proyek yang sudah ada.

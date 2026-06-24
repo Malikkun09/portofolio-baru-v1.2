@@ -138,3 +138,16 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #8b5cf6;
 }
+
+@keyframes loading-marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-33.33%);
+  }
+}
+
+.loading-marquee {
+  animation: loading-marquee 20s linear infinite;
+}
