@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import LoadingScreen from './LoadingScreen';
 
 const MIN_LOADING_MS = 2800;
+const PROGRESS_DURATION_MS = 3800;
 
 interface AppLoaderProps {
   children: React.ReactNode;
@@ -11,6 +12,14 @@ export default function AppLoader({ children }: AppLoaderProps) {
   const [phase, setPhase] = useState<'loading' | 'exiting' | 'done'>('loading');
   const [contentReady, setContentReady] = useState(false);
   const [progressComplete, setProgressComplete] = useState(false);
+
+  const handleProgressComplete = useCallback(() => {
+    setProgressComplete(true);
+  }, []);
+
+  const handleExitComplete = useCallback(() => {
+    setPhase('done');
+  }, []);
 
   useEffect(() => {
     const start = Date.now();
@@ -39,17 +48,21 @@ export default function AppLoader({ children }: AppLoaderProps) {
     }
   }, [contentReady, progressComplete, phase]);
 
+  const showLoader = phase !== 'done';
+
   return (
     <>
-      {phase !== 'done' && (
+      <div className={phase === 'done' ? 'animate-fade-in' : undefined} aria-hidden={showLoader}>
+        {children}
+      </div>
+
+      {showLoader && (
         <LoadingScreen
           isExiting={phase === 'exiting'}
-          onProgressComplete={() => setProgressComplete(true)}
-          onExitComplete={() => setPhase('done')}
+          progressDurationMs={PROGRESS_DURATION_MS}
+          onProgressComplete={handleProgressComplete}
+          onExitComplete={handleExitComplete}
         />
-      )}
-      {phase === 'done' && (
-        <div className="animate-in fade-in duration-700">{children}</div>
       )}
     </>
   );

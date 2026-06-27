@@ -148,12 +148,14 @@ function Loading3DFallback() {
 
 interface LoadingScreenProps {
   isExiting?: boolean;
+  progressDurationMs?: number;
   onProgressComplete?: () => void;
   onExitComplete?: () => void;
 }
 
 export default function LoadingScreen({
   isExiting = false,
+  progressDurationMs = 3800,
   onProgressComplete,
   onExitComplete,
 }: LoadingScreenProps) {
@@ -161,6 +163,13 @@ export default function LoadingScreen({
   const [currentTag, setCurrentTag] = useState(0);
   const [sceneReady, setSceneReady] = useState(false);
   const progressCompleteRef = useRef(false);
+  const onProgressCompleteRef = useRef(onProgressComplete);
+  const onExitCompleteRef = useRef(onExitComplete);
+
+  useEffect(() => {
+    onProgressCompleteRef.current = onProgressComplete;
+    onExitCompleteRef.current = onExitComplete;
+  }, [onProgressComplete, onExitComplete]);
 
   useEffect(() => {
     const timer = setTimeout(() => setSceneReady(true), 500);
@@ -168,13 +177,13 @@ export default function LoadingScreen({
   }, []);
 
   useEffect(() => {
-    const duration = 3800;
+    progressCompleteRef.current = false;
     const startTime = Date.now();
     let frameId = 0;
 
     const animate = () => {
       const elapsed = Date.now() - startTime;
-      const raw = Math.min(elapsed / duration, 1);
+      const raw = Math.min(elapsed / progressDurationMs, 1);
       const eased = 1 - Math.pow(1 - raw, 3);
       setProgress(Math.round(eased * 100));
 
@@ -184,14 +193,14 @@ export default function LoadingScreen({
         setProgress(100);
         if (!progressCompleteRef.current) {
           progressCompleteRef.current = true;
-          onProgressComplete?.();
+          onProgressCompleteRef.current?.();
         }
       }
     };
 
     frameId = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(frameId);
-  }, [onProgressComplete]);
+  }, [progressDurationMs]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -207,7 +216,7 @@ export default function LoadingScreen({
       animate={{ opacity: isExiting ? 0 : 1 }}
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
       onAnimationComplete={() => {
-        if (isExiting) onExitComplete?.();
+        if (isExiting) onExitCompleteRef.current?.();
       }}
       style={{ pointerEvents: isExiting ? 'none' : 'auto' }}
       aria-hidden={isExiting}
